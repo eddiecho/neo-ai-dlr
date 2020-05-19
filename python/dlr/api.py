@@ -74,6 +74,7 @@ class DLRModel(IDLRModel):
             # Find correct runtime implementation for the model
             tf_model_path = _find_model_file(model_path, '.pb')
             tflite_model_path = _find_model_file(model_path, '.tflite')
+            pyt_model_path = _find_model_file(model_path, '.pt') or _find_model_file(model_path, '.pth')
             # Check if found both Tensorflow and TFLite files
             if tf_model_path is not None and tflite_model_path is not None:
                 raise ValueError('Found both .pb and .tflite files under {}'.format(model_path))
@@ -90,6 +91,10 @@ class DLRModel(IDLRModel):
                     self.neo_logger.warning("dev_id parameter is not supported")
                 from .tflite_model import TFLiteModelImpl
                 self._impl = TFLiteModelImpl(tflite_model_path)
+                return
+            if pyt_model_path is not None:
+                from .pytorch_model import PytorchModelImpl
+                self._impl = PytorchModelImpl(pyt_model_path, dev_type, dev_id)
                 return
             # Default to DLR C API (Python wrapper)
             from .dlr_model import DLRModelImpl

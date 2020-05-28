@@ -91,7 +91,7 @@ class PytorchModelImpl(IDLRModel):
         if self.dev_type == 'inf':
             import torch_neuron
             model = torch.jit.load(self.model_file)
-        elif self.dev_type = 'gpu':
+        elif self.dev_type == 'gpu':
             model = torch.jit.load(self.model_file)
             model.to(torch.device('cuda'))
         else:
@@ -105,7 +105,6 @@ class PytorchModelImpl(IDLRModel):
         """
         pth_file = None
         aux_files = []
-        ir_format = GraphIR.relay
         if self.model_file.endswith('.pth') or self.model_file.endswith('.pt'):
             if pth_file is not None:
                 raise RuntimeError('InputConfiguration: Exactly one .pth or .pt file is allowed for PyTorch models.')
